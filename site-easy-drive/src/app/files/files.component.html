@@ -1,0 +1,8 @@
+
+<h2>Files</h2>
+<ul>
+    <li *ngFor="let file of files">
+        <span *ngIf="file" [class.selected]="file === selectedFile" (click)="onSelect(file)">Name: {{file.name}}</span><br/>
+    </li>
+</ul>
+<app-singlefile [file]="selectedFile"></app-singlefile>
