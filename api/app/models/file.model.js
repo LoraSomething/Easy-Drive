@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
 
 const UserFileSchema = mongoose.Schema({
     name: String,
-    location: String
+    storageID: String
 }, {
     timestamps: true
 }, { 
