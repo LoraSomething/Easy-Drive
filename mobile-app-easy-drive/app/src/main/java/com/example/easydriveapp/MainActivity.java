@@ -49,6 +49,11 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getAllFiles(null);
+    }
 
     private void populateRecyclerView(ArrayList<Userfile> userfiles) {
         myAdapter = new UserfileAdapter(this, userfiles);
@@ -97,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
 
     @Override
     public void onItemClicked(int index) {
-        Toast.makeText(this, "Surname " + userfiles.get(index).getName(), Toast.LENGTH_SHORT).show();
         Intent myIntent = new Intent(MainActivity.this, DetailViewActivity.class);
         myIntent.putExtra("userfileIdIntent",userfiles.get(index).get_id());
         startActivity(myIntent);

@@ -3,13 +3,27 @@ package com.example.easydriveapp;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
 public class Userfile {
-    @SerializedName("name")
+    @SerializedName("filename")
     @Expose
     private String name;
-    @SerializedName("_id")
+
+    @SerializedName("ID")
     @Expose
-    private String _id;
+    private int _id;
+
+    @SerializedName("extension")
+    @Expose
+    private String fileExtension;
+
+    enum FileType {
+        IMAGE,
+        AUDIO,
+        VIDEO,
+        PDF,
+        TEXT
+    }
 
     public Userfile(String name) {
         this.name = name;
@@ -23,13 +37,10 @@ public class Userfile {
         this.name = name;
     }
 
-    public String get_id() {
+    public int get_id() {
         return _id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
-    }
 
     @Override
     public String toString() {
@@ -37,5 +48,23 @@ public class Userfile {
                 "name='" + name + '\'' +
                 ", _id='" + _id + '\'' +
                 '}';
+    }
+
+    public FileType getFileType() {
+        if (fileExtension.equals("jpg") || name.contains("png")) {
+            return FileType.IMAGE;
+        }
+        if (fileExtension.equals("mp3")) {
+            return FileType.AUDIO;
+        }
+        if (fileExtension.equals("pdf")) {
+            return FileType.PDF;
+        }
+        if (fileExtension.equals("txt") || name.contains("xml")) {
+            return FileType.TEXT;
+        }
+        else {
+            return null;
+        }
     }
 }
