@@ -5,6 +5,9 @@ import android.util.Log;
 import android.widget.Toast;
 import android.app.ProgressDialog;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,25 +29,22 @@ public class DataAcces {
         call.enqueue(callback);
     }
 
-    public static void getSingleFile(Callback<Userfile> callback, String fileID) {
+    public static void getSingleFile(Callback<Userfile> callback, int fileID) {
         RetrofitClientInstance.GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(RetrofitClientInstance.GetDataService.class);
         Call<Userfile> call = service.getSingleFile(fileID);
         call.enqueue(callback);
     }
 
-    public static void renameSingleFile(Callback<Userfile> callback, String fileID, String newFilename) {
+    public static void renameSingleFile(Callback<Userfile> callback, Userfile u) {
         RetrofitClientInstance.GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(RetrofitClientInstance.GetDataService.class);
 
-        JSONObject objName = new JSONObject();
-        try {
-            objName.put("name",newFilename);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JsonObject j = new JsonObject();
 
-        RequestBody myreqbody = null;
-        myreqbody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),objName.toString());
-        Call<Userfile> call = service.renameSingleFile(fileID, myreqbody);
+        j.addProperty("ID",Integer.toString(u.get_id()));
+        j.addProperty("filename",u.getName());
+        j.addProperty("extension",u.getExtension());
+
+        Call<Userfile> call = service.renameSingleFile(j);
         call.enqueue(callback);
     }
 }

@@ -50,10 +50,9 @@ namespace EasyDriveAPI.Controllers
 
                 var u = new Userfile { filename = dbfilename,storageID=f.Name,extension=dbfilextension};
 
-                var da = new DataAccess.DataAccess();
-                da.UploadFile(u);
+                DataAccess.DataAccess.uploadFile(u);
 
-                return Request.CreateResponse(HttpStatusCode.OK, u.ToString());
+                return Request.CreateResponse(HttpStatusCode.OK, "File uploaded succefully");
             }
             catch (System.Exception e)
             {

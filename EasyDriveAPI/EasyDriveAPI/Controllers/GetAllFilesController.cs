@@ -13,8 +13,7 @@ namespace EasyDriveAPI.Controllers
         [HttpGet]
         public List<Userfile> GetAll()
         {
-            var da = new DataAccess.DataAccess();
-            return da.GetFiles();
+            return DataAccess.DataAccess.getFiles();
         }
     }
 }

@@ -27,7 +27,7 @@ public class DetailViewActivity extends AppCompatActivity {
 
     TextView tvFileName;
     Button btRename, btOpen, btDownload;
-    String userfileId;
+    int userfileId;
     Userfile userfile;
     JSONObject objName;
 
@@ -36,7 +36,7 @@ public class DetailViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
-        userfileId = getIntent().getStringExtra("userfileIdIntent");
+        userfileId = getIntent().getIntExtra("userfileIdIntent",0);
 
         tvFileName = findViewById(R.id.tvFileName);
         btRename = findViewById(R.id.btRename);
@@ -66,15 +66,18 @@ public class DetailViewActivity extends AppCompatActivity {
                 final EditText input = new EditText(DetailViewActivity.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_TEXT);
                 builder.setView(input);
+                input.setText(userfile.getName());
 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         String m_Text = input.getText().toString();
+                        userfile.setName(m_Text);
                         DataAcces.renameSingleFile(new Callback<Userfile>() {
                             @Override
                             public void onResponse(Call<Userfile> call, Response<Userfile> response) {
-                                Toast.makeText(DetailViewActivity.this, "Rename Suces", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DetailViewActivity.this, "Rename Success", Toast.LENGTH_SHORT).show();
                                 tvFileName.setText(response.body().getName());
                             }
 
@@ -83,7 +86,7 @@ public class DetailViewActivity extends AppCompatActivity {
                                 Toast.makeText(DetailViewActivity.this, "Rename failed", Toast.LENGTH_SHORT).show();
 
                             }
-                        }, userfileId, m_Text);
+                        }, userfile);
 
 
                     }

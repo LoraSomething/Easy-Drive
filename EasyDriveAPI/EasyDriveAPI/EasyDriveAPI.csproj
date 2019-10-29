@@ -189,7 +189,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\DeleteController.cs" />
     <Compile Include="Controllers\GetAllFilesController.cs" />
+    <Compile Include="Controllers\GetOneFileController.cs" />
+    <Compile Include="Controllers\RenameOneFileController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

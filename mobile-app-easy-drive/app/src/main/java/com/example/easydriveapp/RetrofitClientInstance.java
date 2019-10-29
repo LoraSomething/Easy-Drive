@@ -1,5 +1,7 @@
 package com.example.easydriveapp;
 
+import com.google.gson.JsonObject;
+
 import org.json.JSONObject;
 
 import java.io.File;
@@ -35,12 +37,12 @@ public class RetrofitClientInstance {
         @GET("getallfiles")
         Call<ArrayList<Userfile>> getAllFiles();
 
-        @GET("/getfile/{file_id}")
-        Call<Userfile> getSingleFile(@Path("file_id") String fileID);
+        @GET("getonefile/{file_id}")
+        Call<Userfile> getSingleFile(@Path("file_id") int fileID);
 
-        @Headers( "Content-Type: application/json; charset=utf-8")
-        @POST("/updatefile/{file_id}")
-        Call<Userfile> renameSingleFile(@Path("file_id") String fileID, @Body RequestBody newFilename);
+        //@Headers( "Content-Type: application/json; charset=utf-8")
+        @POST("renameonefile")
+        Call<Userfile> renameSingleFile(@Body JsonObject file);
 
     }
 }

@@ -13,6 +13,7 @@ public class Userfile {
     @Expose
     private int _id;
 
+
     @SerializedName("extension")
     @Expose
     private String fileExtension;
@@ -29,26 +30,20 @@ public class Userfile {
         this.name = name;
     }
 
+
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public int get_id() {
         return _id;
     }
-
-
-    @Override
-    public String toString() {
-        return "Userfile{" +
-                "name='" + name + '\'' +
-                ", _id='" + _id + '\'' +
-                '}';
+    public String getExtension() {
+        return fileExtension;
     }
+
 
     public FileType getFileType() {
         if (fileExtension.equals("jpg") || name.contains("png")) {
