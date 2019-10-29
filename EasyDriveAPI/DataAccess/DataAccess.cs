@@ -54,6 +54,7 @@ namespace DataAccess
             {
                 Userfile u = context.Userfiles.FirstOrDefault(x => x.ID == ID);
                 context.Userfiles.Remove(u);
+                context.SaveChanges();
             }
         }
     }
