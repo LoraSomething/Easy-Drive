@@ -43,9 +43,9 @@ public class RetrofitClientInstance {
         //@Headers( "Content-Type: application/json; charset=utf-8")
         @POST("renameonefile")
         Call<Userfile> renameSingleFile(@Body JsonObject file);
-/*
+
         @POST("delete")
         Call<Userfile> deleteFile(@Body JsonObject file);
-*/
+
     }
 }

@@ -44,7 +44,7 @@ public class DataAcces {
         Call<Userfile> call = service.renameSingleFile(j);
         call.enqueue(callback);
     }
-/*
+
     public static void deleteFile(Callback<Userfile> callback, Userfile u) {
         RetrofitClientInstance.GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(RetrofitClientInstance.GetDataService.class);
         JsonObject j = new JsonObject();
@@ -53,5 +53,5 @@ public class DataAcces {
         j.addProperty("extension",u.getExtension());
         Call<Userfile> call = service.deleteFile(j);
         call.enqueue(callback);
-    }*/
+    }
 }

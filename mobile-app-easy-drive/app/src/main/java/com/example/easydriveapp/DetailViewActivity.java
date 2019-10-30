@@ -50,13 +50,22 @@ public class DetailViewActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Userfile> call, Response<Userfile> response) {
                 userfile = response.body();
-                tvFileName.setText(userfile.getName()+userfile.getExtension());
+
+                if (userfile.getExtension() != null) {
+                    tvFileName.setText(userfile.getName() +"."+ userfile.getExtension());
+                }
+                else{
+                    tvFileName.setText(userfile.getName());
+                }
 
                 if ( userfile.getFileType() == Userfile.FileType.IMAGE){
                     ivDetailFiletype.setImageResource(R.drawable.png);
                 }
                 if ( userfile.getFileType() == Userfile.FileType.PDF){
                     ivDetailFiletype.setImageResource(R.drawable.pdf);
+                }
+                if ( userfile.getFileType() == Userfile.FileType.TEXT){
+                    ivDetailFiletype.setImageResource(R.drawable.text);
                 }
             }
 
@@ -112,14 +121,14 @@ public class DetailViewActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-/*
+
         btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DataAcces.deleteFile(new Callback<Userfile>() {
                     @Override
                     public void onResponse(Call<Userfile> call, Response<Userfile> response) {
-                        //finish();
+                        finish();
                     }
 
                     @Override
@@ -129,7 +138,7 @@ public class DetailViewActivity extends AppCompatActivity {
                 },userfile);
             }
         });
-*/
+
     }
 
 }
