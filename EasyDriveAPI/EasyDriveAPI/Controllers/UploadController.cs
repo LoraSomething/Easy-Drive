@@ -24,6 +24,12 @@ namespace EasyDriveAPI.Controllers
             }
 
             string root = HttpContext.Current.Server.MapPath("~/UploadedFiles");
+
+            bool exists = System.IO.Directory.Exists(root);
+
+            if (!exists)
+                System.IO.Directory.CreateDirectory(root);
+
             var provider = new MultipartFormDataStreamProvider(root);
 
             try
