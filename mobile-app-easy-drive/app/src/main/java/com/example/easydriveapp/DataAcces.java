@@ -37,14 +37,21 @@ public class DataAcces {
 
     public static void renameSingleFile(Callback<Userfile> callback, Userfile u) {
         RetrofitClientInstance.GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(RetrofitClientInstance.GetDataService.class);
-
         JsonObject j = new JsonObject();
-
         j.addProperty("ID",Integer.toString(u.get_id()));
         j.addProperty("filename",u.getName());
         j.addProperty("extension",u.getExtension());
-
         Call<Userfile> call = service.renameSingleFile(j);
         call.enqueue(callback);
     }
+/*
+    public static void deleteFile(Callback<Userfile> callback, Userfile u) {
+        RetrofitClientInstance.GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(RetrofitClientInstance.GetDataService.class);
+        JsonObject j = new JsonObject();
+        j.addProperty("ID",Integer.toString(u.get_id()));
+        j.addProperty("filename",u.getName());
+        j.addProperty("extension",u.getExtension());
+        Call<Userfile> call = service.deleteFile(j);
+        call.enqueue(callback);
+    }*/
 }

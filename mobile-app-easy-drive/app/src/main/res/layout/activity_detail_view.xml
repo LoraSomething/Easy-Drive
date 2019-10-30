@@ -8,7 +8,7 @@
     tools:context=".DetailViewActivity">
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ivDetailFiletype"
         android:layout_width="match_parent"
         android:layout_height="118dp"
         android:layout_marginTop="72dp"
@@ -46,5 +46,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="download" />
+
+    <Button
+        android:id="@+id/btDelete"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Delete" />
 
 </LinearLayout>

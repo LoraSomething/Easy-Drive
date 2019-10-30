@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,10 @@ import retrofit2.Response;
 public class DetailViewActivity extends AppCompatActivity {
 
     TextView tvFileName;
-    Button btRename, btOpen, btDownload;
+    Button btRename, btOpen, btDownload, btDelete;
     int userfileId;
     Userfile userfile;
-    JSONObject objName;
+    ImageView ivDetailFiletype;
 
 
     @Override
@@ -42,12 +43,21 @@ public class DetailViewActivity extends AppCompatActivity {
         btRename = findViewById(R.id.btRename);
         btOpen = findViewById(R.id.btOpen);
         btDownload = findViewById(R.id.btDownload);
+        btDelete= findViewById(R.id.btDelete);
+        ivDetailFiletype = findViewById(R.id.ivDetailFiletype);
 
         DataAcces.getSingleFile(new Callback<Userfile>() {
             @Override
             public void onResponse(Call<Userfile> call, Response<Userfile> response) {
                 userfile = response.body();
-                tvFileName.setText(userfile.getName());
+                tvFileName.setText(userfile.getName()+userfile.getExtension());
+
+                if ( userfile.getFileType() == Userfile.FileType.IMAGE){
+                    ivDetailFiletype.setImageResource(R.drawable.png);
+                }
+                if ( userfile.getFileType() == Userfile.FileType.PDF){
+                    ivDetailFiletype.setImageResource(R.drawable.pdf);
+                }
             }
 
             @Override
@@ -95,13 +105,31 @@ public class DetailViewActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        Toast.makeText(DetailViewActivity.this, "Rename cancelled", Toast.LENGTH_SHORT).show();
                     }
                 });
 
                 builder.show();
             }
         });
+/*
+        btDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataAcces.deleteFile(new Callback<Userfile>() {
+                    @Override
+                    public void onResponse(Call<Userfile> call, Response<Userfile> response) {
+                        //finish();
+                    }
 
+                    @Override
+                    public void onFailure(Call<Userfile> call, Throwable t) {
+                        Toast.makeText(DetailViewActivity.this, "Delete failed", Toast.LENGTH_SHORT).show();
+                    }
+                },userfile);
+            }
+        });
+*/
     }
 
 }

@@ -23,7 +23,8 @@ public class Userfile {
         AUDIO,
         VIDEO,
         PDF,
-        TEXT
+        TEXT,
+        UNKNOWN
     }
 
     public Userfile(String name) {
@@ -34,32 +35,44 @@ public class Userfile {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public int get_id() {
         return _id;
     }
+
     public String getExtension() {
-        return fileExtension;
+        if (fileExtension != null) {
+            return fileExtension;
+        } else {
+            return "";
+        }
     }
 
 
     public FileType getFileType() {
-        if (fileExtension.equals("jpg") || name.contains("png")) {
-            return FileType.IMAGE;
-        }
-        if (fileExtension.equals("mp3")) {
-            return FileType.AUDIO;
-        }
-        if (fileExtension.equals("pdf")) {
-            return FileType.PDF;
-        }
-        if (fileExtension.equals("txt") || name.contains("xml")) {
-            return FileType.TEXT;
-        }
-        else {
-            return null;
+
+        if (fileExtension != null) {
+
+            if (fileExtension.equals("jpg") || fileExtension.equals("png")) {
+                return FileType.IMAGE;
+            }
+            if (fileExtension.equals("mp3")) {
+                return FileType.AUDIO;
+            }
+            if (fileExtension.equals("pdf")) {
+                return FileType.PDF;
+            }
+            if (fileExtension.equals("txt") || fileExtension.equals("xml")) {
+                return FileType.TEXT;
+            } else {
+                return FileType.UNKNOWN;
+            }
+        } else {
+            return FileType.UNKNOWN;
         }
     }
 }

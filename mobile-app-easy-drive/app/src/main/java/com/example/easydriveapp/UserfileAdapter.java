@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ public class UserfileAdapter extends RecyclerView.Adapter<UserfileAdapter.ViewHo
 
     private ArrayList<Userfile> userfiles;
     TextView tvFileName;
+    ImageView ivFiletype;
 
     ItemClicked activity;
 
@@ -31,11 +33,13 @@ public class UserfileAdapter extends RecyclerView.Adapter<UserfileAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView tvFileName;
+        ImageView ivFiletype;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvFileName = itemView.findViewById(R.id.tvFileName);
+            ivFiletype = itemView.findViewById(R.id.ivFiletype);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -52,14 +56,19 @@ public class UserfileAdapter extends RecyclerView.Adapter<UserfileAdapter.ViewHo
     public UserfileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_files,parent,false);
-
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserfileAdapter.ViewHolder viewHolder, int i) {
         viewHolder.itemView.setTag(userfiles.get(i));
-        viewHolder.tvFileName.setText(userfiles.get(i).getName());
+        viewHolder.tvFileName.setText(userfiles.get(i).getName()+userfiles.get(i).getExtension());
+        if ( userfiles.get(i).getFileType() == Userfile.FileType.IMAGE){
+            viewHolder.ivFiletype.setImageResource(R.drawable.png);
+        }
+        if ( userfiles.get(i).getFileType() == Userfile.FileType.PDF){
+            viewHolder.ivFiletype.setImageResource(R.drawable.pdf);
+        }
     }
 
     @Override
