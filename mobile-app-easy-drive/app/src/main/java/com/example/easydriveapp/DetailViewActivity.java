@@ -28,7 +28,7 @@ public class DetailViewActivity extends AppCompatActivity {
 
     TextView tvFileName;
     Button btRename, btOpen, btDownload, btDelete;
-    int userfileId;
+    String userfileId;
     Userfile userfile;
     ImageView ivDetailFiletype;
 
@@ -37,7 +37,7 @@ public class DetailViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
-        userfileId = getIntent().getIntExtra("userfileIdIntent",0);
+        userfileId = getIntent().getStringExtra("userfileIdIntent");
 
         tvFileName = findViewById(R.id.tvFileName);
         btRename = findViewById(R.id.btRename);
@@ -46,36 +46,30 @@ public class DetailViewActivity extends AppCompatActivity {
         btDelete= findViewById(R.id.btDelete);
         ivDetailFiletype = findViewById(R.id.ivDetailFiletype);
 
-        DataAcces.getSingleFile(new Callback<Userfile>() {
+        DataAccesFirestore.GetSingleFile(new Action<Userfile>() {
             @Override
-            public void onResponse(Call<Userfile> call, Response<Userfile> response) {
-                userfile = response.body();
+            public void execute(Userfile param) {
+                userfile = param;
 
-                if (userfile.getExtension() != null) {
-                    tvFileName.setText(userfile.getName() +"."+ userfile.getExtension());
-                }
-                else{
+                if (userfile.getFileExtension() != null) {
+                    tvFileName.setText(userfile.getName() + "." + userfile.getFileExtension());
+                } else {
                     tvFileName.setText(userfile.getName());
                 }
 
-                if ( userfile.getFileType() == Userfile.FileType.IMAGE){
+                if (userfile.getFileType() == Userfile.FileType.IMAGE) {
                     ivDetailFiletype.setImageResource(R.drawable.png);
                 }
-                if ( userfile.getFileType() == Userfile.FileType.PDF){
+                if (userfile.getFileType() == Userfile.FileType.PDF) {
                     ivDetailFiletype.setImageResource(R.drawable.pdf);
                 }
-                if ( userfile.getFileType() == Userfile.FileType.TEXT){
+                if (userfile.getFileType() == Userfile.FileType.TEXT) {
                     ivDetailFiletype.setImageResource(R.drawable.text);
                 }
             }
-
-            @Override
-            public void onFailure(Call<Userfile> call, Throwable t) {
-                Toast.makeText(DetailViewActivity.this, "Get failed", Toast.LENGTH_SHORT).show();
-            }
         }, userfileId);
 
-        btRename.setOnClickListener(new View.OnClickListener() {
+        /*btRename.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -137,7 +131,7 @@ public class DetailViewActivity extends AppCompatActivity {
                     }
                 },userfile);
             }
-        });
+        });*/
 
     }
 

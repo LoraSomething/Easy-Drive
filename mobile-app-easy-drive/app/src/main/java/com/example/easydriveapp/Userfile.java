@@ -11,7 +11,7 @@ public class Userfile {
 
     @SerializedName("ID")
     @Expose
-    private int _id;
+    private String _id;
 
 
     @SerializedName("extension")
@@ -27,8 +27,7 @@ public class Userfile {
         UNKNOWN
     }
 
-    public Userfile(String name) {
-        this.name = name;
+    public Userfile() {
     }
 
 
@@ -40,11 +39,20 @@ public class Userfile {
         this.name = name;
     }
 
-    public int get_id() {
+    public String get_id() {
         return _id;
     }
 
-    public String getExtension() {
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
+    public String getFileExtension() {
         if (fileExtension != null) {
             return fileExtension;
         } else {
@@ -54,6 +62,15 @@ public class Userfile {
 
 
     public FileType getFileType() {
+        return decideFileType();
+    }
+
+
+    public void setFileType() {
+
+    }
+
+    public FileType decideFileType() {
 
         if (fileExtension != null) {
 
@@ -74,5 +91,14 @@ public class Userfile {
         } else {
             return FileType.UNKNOWN;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Userfile{" +
+                "name='" + name + '\'' +
+                ", _id=" + _id +
+                ", fileExtension='" + fileExtension + '\'' +
+                '}';
     }
 }

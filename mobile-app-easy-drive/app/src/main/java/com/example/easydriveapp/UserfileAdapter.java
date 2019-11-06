@@ -62,8 +62,8 @@ public class UserfileAdapter extends RecyclerView.Adapter<UserfileAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull UserfileAdapter.ViewHolder viewHolder, int i) {
         viewHolder.itemView.setTag(userfiles.get(i));
-        if (userfiles.get(i).getExtension() != null) {
-            viewHolder.tvFileName.setText(userfiles.get(i).getName() +"."+ userfiles.get(i).getExtension());
+        if (userfiles.get(i).getFileExtension() != null) {
+            viewHolder.tvFileName.setText(userfiles.get(i).getName() +"."+ userfiles.get(i).getFileExtension());
         }
         else{
             viewHolder.tvFileName.setText(userfiles.get(i).getName());

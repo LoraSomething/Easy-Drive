@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "690897852794-qscp4lruk4pkpbh9670i2lkbn5k14pun.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.easydriveapp",
+            "certificate_hash": "fcd3208761c298bab169ceadf4ea2be442d48567"
+          }
+        },
+        {
           "client_id": "690897852794-ha8avpoaqmbj81f4lvug3m04qtsb63ej.apps.googleusercontent.com",
           "client_type": 3
         }
