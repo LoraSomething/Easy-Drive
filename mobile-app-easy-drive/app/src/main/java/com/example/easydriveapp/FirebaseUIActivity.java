@@ -18,11 +18,6 @@ import java.util.List;
 
 public class FirebaseUIActivity extends AppCompatActivity {
 
-        enum SignType {
-            SIGN_IN,
-            SIGN_OUT
-        }
-
         private static final int RC_SIGN_IN = 123;
 
         @Override
@@ -44,6 +39,7 @@ public class FirebaseUIActivity extends AppCompatActivity {
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
                             .setAvailableProviders(providers)
+                            .setTheme(R.style.AppTheme)
                             .build(),
                     RC_SIGN_IN);
             // [END auth_fui_create_intent]

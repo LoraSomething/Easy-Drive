@@ -2,16 +2,31 @@ package com.example.easydriveapp;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +47,8 @@ public class DetailViewActivity extends AppCompatActivity {
     Userfile userfile;
     ImageView ivDetailFiletype;
 
+    File localFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +60,17 @@ public class DetailViewActivity extends AppCompatActivity {
         btRename = findViewById(R.id.btRename);
         btOpen = findViewById(R.id.btOpen);
         btDownload = findViewById(R.id.btDownload);
-        btDelete= findViewById(R.id.btDelete);
+        btDelete = findViewById(R.id.btDelete);
         ivDetailFiletype = findViewById(R.id.ivDetailFiletype);
+
+        btDownload.setEnabled(true);
+        btRename.setEnabled(true);
+        btOpen.setEnabled(true);
+        btDelete.setEnabled(true);
+
+        final ProgressBar spinner;
+        spinner = (ProgressBar) findViewById(R.id.progress_bar);
+        spinner.setVisibility(View.GONE);
 
         DataAccesFirestore.GetSingleFile(new Action<Userfile>() {
             @Override
@@ -57,19 +83,22 @@ public class DetailViewActivity extends AppCompatActivity {
                     tvFileName.setText(userfile.getName());
                 }
 
-                if (userfile.getFileType() == Userfile.FileType.IMAGE) {
+                if (userfile.decideFileType() == Userfile.FileType.IMAGE) {
                     ivDetailFiletype.setImageResource(R.drawable.png);
                 }
-                if (userfile.getFileType() == Userfile.FileType.PDF) {
+                if (userfile.decideFileType() == Userfile.FileType.PDF) {
                     ivDetailFiletype.setImageResource(R.drawable.pdf);
                 }
-                if (userfile.getFileType() == Userfile.FileType.TEXT) {
+                if (userfile.decideFileType() == Userfile.FileType.TEXT) {
                     ivDetailFiletype.setImageResource(R.drawable.text);
+                }
+                if (userfile.decideFileType() == Userfile.FileType.AUDIO) {
+                    ivDetailFiletype.setImageResource(R.drawable.audio);
                 }
             }
         }, userfileId);
 
-        /*btRename.setOnClickListener(new View.OnClickListener() {
+        btRename.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -85,23 +114,14 @@ public class DetailViewActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        String m_Text = input.getText().toString();
+                        final String m_Text = input.getText().toString().trim();
                         userfile.setName(m_Text);
-                        DataAcces.renameSingleFile(new Callback<Userfile>() {
+                        DataAccesFirestore.UpdateOneFile(new Action<Boolean>() {
                             @Override
-                            public void onResponse(Call<Userfile> call, Response<Userfile> response) {
-                                Toast.makeText(DetailViewActivity.this, "Rename Success", Toast.LENGTH_SHORT).show();
-                                tvFileName.setText(response.body().getName());
+                            public void execute(Boolean param) {
+                                tvFileName.setText(m_Text + "." + userfile.getFileExtension());
                             }
-
-                            @Override
-                            public void onFailure(Call<Userfile> call, Throwable t) {
-                                Toast.makeText(DetailViewActivity.this, "Rename failed", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }, userfile);
-
-
+                        }, userfileId, userfile);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -119,20 +139,127 @@ public class DetailViewActivity extends AppCompatActivity {
         btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataAcces.deleteFile(new Callback<Userfile>() {
+                spinner.setVisibility(View.VISIBLE);
+                btDownload.setEnabled(false);
+                btRename.setEnabled(false);
+                btOpen.setEnabled(false);
+                btDelete.setEnabled(false);
+                DataAccesFirestore.DeleteOneFile(new Action<Boolean>() {
                     @Override
-                    public void onResponse(Call<Userfile> call, Response<Userfile> response) {
+                    public void execute(Boolean param) {
+                        spinner.setVisibility(View.GONE);
                         finish();
                     }
-
-                    @Override
-                    public void onFailure(Call<Userfile> call, Throwable t) {
-                        Toast.makeText(DetailViewActivity.this, "Delete failed", Toast.LENGTH_SHORT).show();
-                    }
-                },userfile);
+                }, userfileId);
             }
-        });*/
+        });
+
+        btOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isStoragePermissionGranted()) {
+                    //do your check here
+                    spinner.setVisibility(View.VISIBLE);
+                    btDownload.setEnabled(false);
+                    btRename.setEnabled(false);
+                    btOpen.setEnabled(false);
+                    btDelete.setEnabled(false);
+                    DataAccesFirestore.DownloadOneFile(new Action<Boolean>() {
+                        @Override
+                        public void execute(Boolean param) {
+                            Toast.makeText(DetailViewActivity.this, "Opening file", Toast.LENGTH_SHORT).show();
+                            File fileNameOnDevice = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "");
+                            String file_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + userfile.getName();
+                            File localFile = new File(fileNameOnDevice, userfile.getName() + "." + userfile.getFileExtension());
+                            Uri uri = FileProvider.getUriForFile(DetailViewActivity.this,
+                                    "com.mypackage.myprovider", localFile);
+
+                            ContentResolver cR = getContentResolver();
+                            MimeTypeMap mime = MimeTypeMap.getSingleton();
+                            String type = mime.getExtensionFromMimeType(cR.getType(uri));
+
+                            Intent intent = new Intent();
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setDataAndType(uri, type);
+                            startActivityForResult(intent,123);
+
+                            spinner.setVisibility(View.GONE);
+                            btDownload.setEnabled(true);
+                            btRename.setEnabled(true);
+                            btOpen.setEnabled(true);
+                            btDelete.setEnabled(true);
+
+                        }
+                    }, userfile);
+                } else {
+                    ActivityCompat.requestPermissions(DetailViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
+            }
+        });
+
+
+        btDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isStoragePermissionGranted()) {
+                    //do your check here
+                    spinner.setVisibility(View.VISIBLE);
+                    btDownload.setEnabled(false);
+                    btRename.setEnabled(false);
+                    btOpen.setEnabled(false);
+                    btDelete.setEnabled(false);
+                    DataAccesFirestore.DownloadOneFile(new Action<Boolean>() {
+                        @Override
+                        public void execute(Boolean param) {
+                            Toast.makeText(DetailViewActivity.this, "File Downloaded", Toast.LENGTH_SHORT).show();
+                            spinner.setVisibility(View.GONE);
+                            btDownload.setEnabled(true);
+                            btRename.setEnabled(true);
+                            btOpen.setEnabled(true);
+                            btDelete.setEnabled(true);
+                        }
+                    }, userfile);
+                }
+                else {
+                    ActivityCompat.requestPermissions(DetailViewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
+            }
+        });
 
     }
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("","Permission is granted");
+                return true;
+            } else {
 
+                Log.v("","Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("","Permission is granted");
+            return true;
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 123:
+                try {
+                    localFile.delete();
+                    Toast.makeText(DetailViewActivity.this, "Deleted file", Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception ext){}
+                break;
+            default:
+
+        }
+    }
 }

@@ -8,20 +8,30 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 
@@ -91,12 +101,11 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 int id = item.getItemId();
                 switch(id)
                 {
                     case R.id.nav_item_one:
-                        Toast.makeText(MainActivity.this, "Upload",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Upload",Toast.LENGTH_SHORT).show();
                         uploadFile();
                         break;
                     case R.id.nav_item_two:
@@ -108,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
                     default:
                         return true;
                 }
+                drawer.closeDrawers();
                 return true;
-
             }
         });
 
@@ -156,8 +165,70 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.setType("*/*");
         chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-        startActivityForResult(chooseFile, 1);
+        startActivityForResult(chooseFile, 1); //below
     }
+    //closely related to upload
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                if (resultCode == -1) {
+                    //String type="testext";
+                    //String name="testname";
+                    Uri fileUri = data.getData();
+
+                    Log.e("---File Uri---",fileUri.toString());
+
+                    ContentResolver cR = getContentResolver();
+                    MimeTypeMap mime = MimeTypeMap.getSingleton();
+                    String type = mime.getExtensionFromMimeType(cR.getType(fileUri));
+
+                    String filepath= getFilePath(this,fileUri);
+
+                    File f = new File(fileUri.getPath());
+
+                    Log.e("---File name---", f.getName());
+
+                    Userfile u = new Userfile();
+                    u.setName(f.getName());
+                    u.setFileExtension(type);
+                    DataAccesFirestore.CreateFile(new Action<Boolean>() {
+                        @Override
+                        public void execute(Boolean param) {
+                            if (param){
+                                Toast.makeText(MainActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(MainActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                            }
+                            getAllFiles(null);
+                        }
+                    }, u, fileUri);
+
+                }
+                break;
+
+            default:
+                Toast.makeText(this, "Upload failed. Please try again", Toast.LENGTH_SHORT).show();break;
+        }
+    }
+
+
+    private String getFilePath(Context cntx, Uri uri) {
+        Cursor cursor = null;
+        try {
+            String[] arr = { MediaStore.Images.Media.DATA };
+            cursor = cntx.getContentResolver().query(uri,  arr, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
 
 
     @Override
@@ -167,20 +238,6 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 1:
-                if (resultCode == -1) {
-                    Uri fileUri = data.getData();
-                    String filePath = fileUri.getPath();
-                    Log.e("--------------",fileUri.getPath());
-                }
-
-                break;
-        }
     }
 
     @Override

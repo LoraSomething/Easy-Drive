@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.EventListener;
 
@@ -40,15 +42,27 @@ public class RecyclerViewFiles extends Fragment implements SwipeRefreshLayout.On
         View view = inflater.inflate(R.layout.fragment_recycler_view_files, container, false);
         swipe = view.findViewById(R.id.swiperefresh);
         swipe.setOnRefreshListener(this);
-        swipe.setRefreshing(true);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+            swipe.setRefreshing(true);
+            ((MainActivity) activity).getAllFiles(new Action<Boolean>(){
+                @Override
+                public void execute(Boolean param) {
+                    swipe.setRefreshing(false);
+                }
+            });
+        }
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         ((MainActivity) activity).getAllFiles(new Action<Boolean>(){
             @Override
             public void execute(Boolean param) {
                 swipe.setRefreshing(false);
             }
         });
-        return view;
-
     }
 
     public void setMainActivity(Context context){
@@ -57,14 +71,20 @@ public class RecyclerViewFiles extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        swipe.setRefreshing(true);
-        if (activity instanceof MainActivity){
-            ((MainActivity) activity).getAllFiles(new Action<Boolean>(){
-                @Override
-                public void execute(Boolean param) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+
+            swipe.setRefreshing(true);
+            if (activity instanceof MainActivity) {
+                ((MainActivity) activity).getAllFiles(new Action<Boolean>() {
+                    @Override
+                    public void execute(Boolean param) {
                         swipe.setRefreshing(false);
-                }
-            });
+                    }
+                });
+            }
+        }
+        else{
+            swipe.setRefreshing(false);
         }
     }
 }

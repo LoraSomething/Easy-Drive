@@ -68,14 +68,17 @@ public class UserfileAdapter extends RecyclerView.Adapter<UserfileAdapter.ViewHo
         else{
             viewHolder.tvFileName.setText(userfiles.get(i).getName());
         }
-        if ( userfiles.get(i).getFileType() == Userfile.FileType.IMAGE){
+        if ( userfiles.get(i).decideFileType() == Userfile.FileType.IMAGE){
             viewHolder.ivFiletype.setImageResource(R.drawable.png);
         }
-        if ( userfiles.get(i).getFileType() == Userfile.FileType.PDF){
+        if ( userfiles.get(i).decideFileType() == Userfile.FileType.PDF){
             viewHolder.ivFiletype.setImageResource(R.drawable.pdf);
         }
-        if ( userfiles.get(i).getFileType() == Userfile.FileType.TEXT){
+        if ( userfiles.get(i).decideFileType() == Userfile.FileType.TEXT){
             viewHolder.ivFiletype.setImageResource(R.drawable.text);
+        }
+        if ( userfiles.get(i).decideFileType() == Userfile.FileType.AUDIO){
+            viewHolder.ivFiletype.setImageResource(R.drawable.audio);
         }
     }
 

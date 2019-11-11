@@ -18,6 +18,7 @@ public class Userfile {
     @Expose
     private String fileExtension;
 
+
     enum FileType {
         IMAGE,
         AUDIO,
@@ -60,15 +61,8 @@ public class Userfile {
         }
     }
 
-
-    public FileType getFileType() {
-        return decideFileType();
-    }
-
-
-    public void setFileType() {
-
-    }
+    public void setFileType(){}
+    public void getFileType(){}
 
     public FileType decideFileType() {
 
