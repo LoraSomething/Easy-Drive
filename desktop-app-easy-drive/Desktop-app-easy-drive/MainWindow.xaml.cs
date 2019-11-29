@@ -24,5 +24,9 @@ namespace Desktop_app_easy_drive
         {
             InitializeComponent();
         }
+
+        private void LoginOverlay_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
     }
 }

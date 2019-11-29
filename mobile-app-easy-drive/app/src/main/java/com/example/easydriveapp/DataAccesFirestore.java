@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -14,9 +15,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -256,7 +260,29 @@ public class DataAccesFirestore {
         });
     }
 
-    public void writeFileExternalStorage(String filename) {
+    public static void SetChangeListener(final Action<Boolean> action){
+        final String UserId = FirebaseAuth.getInstance().getUid();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("Userfiles").document(UserId).collection("files");
+
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("", "Listen failed.", e);
+                    return;
+                }
+
+                if (queryDocumentSnapshots != null) {
+                    action.execute(true);
+                } else {
+                    Log.d("", "Current data: null");
+                    action.execute(true);
+                }
+            }
+        });
+
 
     }
 

@@ -122,6 +122,13 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
             }
         });
 
+        DataAccesFirestore.SetChangeListener(new Action<Boolean>() {
+            @Override
+            public void execute(Boolean param) {
+                getAllFiles(null);
+            }
+        });
+
         AuthChanged();
         userfiles = new ArrayList<>();
     }
