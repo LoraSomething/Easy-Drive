@@ -23,6 +23,9 @@ namespace Desktop_app_easy_drive
             win.DataContext = vm;
             win.Show();
             
+            // how to run app in taskbar
+            // settings to synch folder
+            // save in db an MD5 hash of the file contents
         }
 
         public void GetAllFiles()
@@ -55,8 +58,18 @@ namespace Desktop_app_easy_drive
                 using (WebClient wc = new WebClient())
                 {
                     wc.DownloadFileAsync(new System.Uri(res),folderName);
-                    wc.DownloadFile(res, folderName + "\\" + userfile.name + "." + userfile.fileExtension);
+                    string filename = userfile.name.Replace(":", "-");
+                    string savepath = folderName + "\\" + filename + "." + userfile.fileExtension;
+                    wc.DownloadFile(res, savepath);
                 }
+            }));
+        }
+
+        public void DeleteFile(Userfile userfile)
+        {
+            DataAcces.DeleteAsync(userfile, (Action<string>)((res) =>
+            {
+
             }));
         }
 

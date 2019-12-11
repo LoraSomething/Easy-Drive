@@ -13,10 +13,13 @@ public class Userfile {
     @Expose
     private String _id;
 
-
     @SerializedName("extension")
     @Expose
     private String fileExtension;
+
+    @SerializedName("MD5hash")
+    @Expose
+    private String MD5hash;
 
 
     enum FileType {
@@ -39,6 +42,10 @@ public class Userfile {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getMD5hash() {  return MD5hash;  }
+
+    public void setMD5hash(String MD5hash) {  this.MD5hash = MD5hash;  }
 
     public String get_id() {
         return _id;

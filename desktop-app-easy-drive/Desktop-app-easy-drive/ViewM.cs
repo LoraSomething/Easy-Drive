@@ -20,6 +20,7 @@ namespace Desktop_app_easy_drive
             IGetFileURL = new AppCommand(new Action<object>(GetFileURL));
             IRename = new AppCommand(new Action<object>(Rename));
             IDownloadOne = new AppCommand(new Action<object>(DownloadOne));
+            IDelete = new AppCommand(new Action<object>(DeleteFile));
             ILogin = new AppCommand(new Action<object>(Login));
             ILogout = new AppCommand(new Action<object>(Logout));
 
@@ -37,6 +38,7 @@ namespace Desktop_app_easy_drive
         public ICommand IGetFileURL { get; set; }
         public ICommand IRename { get; set; }
         public ICommand IDownloadOne { get; set; }
+        public ICommand IDelete { get; set; }
         public ICommand ILogin { get; set; }
         public ICommand ILogout { get; set; }
 
@@ -162,6 +164,11 @@ namespace Desktop_app_easy_drive
                     }
                 }
             }
+        }
+
+        public void DeleteFile(object param)
+        {
+            _app.DeleteFile(_userfile);
         }
 
         public void Login(object param)

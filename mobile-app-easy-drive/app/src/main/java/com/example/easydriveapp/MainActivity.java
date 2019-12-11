@@ -1,14 +1,5 @@
 package com.example.easydriveapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,15 +14,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -180,25 +181,33 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
         switch (requestCode) {
             case 1:
                 if (resultCode == -1) {
-                    //String type="testext";
-                    //String name="testname";
                     Uri fileUri = data.getData();
 
                     Log.e("---File Uri---",fileUri.toString());
+                    Log.e("---File Path---",fileUri.getPath());
 
                     ContentResolver cR = getContentResolver();
                     MimeTypeMap mime = MimeTypeMap.getSingleton();
                     String type = mime.getExtensionFromMimeType(cR.getType(fileUri));
 
-                    String filepath= getFilePath(this,fileUri);
-
                     File f = new File(fileUri.getPath());
 
+                    String MD5 = "";
+
+                    try {
+                        FileInputStream fis = new FileInputStream(this.getContentResolver().openFileDescriptor(fileUri, "r").getFileDescriptor());
+                        MD5 = FiletoMD5.convertFiletoMD5(fis);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.e("---MD5---", MD5 + "");
                     Log.e("---File name---", f.getName());
 
                     Userfile u = new Userfile();
                     u.setName(f.getName());
                     u.setFileExtension(type);
+                    u.setMD5hash(MD5);
                     DataAccesFirestore.CreateFile(new Action<Boolean>() {
                         @Override
                         public void execute(Boolean param) {
@@ -219,23 +228,6 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
                 Toast.makeText(this, "Upload failed. Please try again", Toast.LENGTH_SHORT).show();break;
         }
     }
-
-
-    private String getFilePath(Context cntx, Uri uri) {
-        Cursor cursor = null;
-        try {
-            String[] arr = { MediaStore.Images.Media.DATA };
-            cursor = cntx.getContentResolver().query(uri,  arr, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
 
 
     @Override

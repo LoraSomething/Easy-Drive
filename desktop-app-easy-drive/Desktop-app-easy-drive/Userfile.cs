@@ -17,6 +17,9 @@ namespace Desktop_app_easy_drive
         public string fileExtension { get; set; }
 
         [FirestoreProperty]
+        public string md5hash { get; set; }
+
+        [FirestoreProperty]
         public string _id { get; set; }
 
         public override string ToString()

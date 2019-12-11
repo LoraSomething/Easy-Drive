@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -47,10 +48,13 @@ namespace Desktop_app_easy_drive
 
             CollectionReference collection = db.Collection("Userfiles").Document(userID).Collection("files");
 
+
+
             Userfile userfile = new Userfile
             {
                 name = System.IO.Path.GetFileNameWithoutExtension(url),
-                fileExtension = System.IO.Path.GetExtension(url).Substring(1)
+                fileExtension = System.IO.Path.GetExtension(url).Substring(1),
+                md5hash = CalculateMD5(url)
             };
             
             DocumentReference document = await collection.AddAsync(userfile);
@@ -86,6 +90,23 @@ namespace Desktop_app_easy_drive
             }
         }
 
+        static string CalculateMD5(string filename)
+        {
+            using (MD5 md5 = new MD5CryptoServiceProvider())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < hash.Length; i++)
+                    {
+                        sb.Append(hash[i].ToString("x2"));
+                    }
+                    return sb.ToString();
+                }
+            }
+        }
+
         public static async void RenameOneFileAsync(Userfile userfile)
         {
             string userID = Authentication.GetUserID();
@@ -106,6 +127,37 @@ namespace Desktop_app_easy_drive
             var task = new FirebaseStorage("easy-drive-4251d.appspot.com").Child(userID).Child(userfile._id).GetDownloadUrlAsync();
             var downloadUrl = await task;
             callback(downloadUrl);
+        }
+
+        public static async void DeleteAsync(Userfile userfile, Action<String> callback)
+        {
+            string userID = Authentication.GetUserID();
+
+            FirestoreDb db = FirestoreDb.Create("easy-drive-4251d");
+
+            DocumentReference document = db.Collection("Userfiles").Document(userID).Collection("files").Document(userfile._id);
+            
+
+            try
+            {
+                var task = new FirebaseStorage("easy-drive-4251d.appspot.com").Child(userID).Child(userfile._id).DeleteAsync();
+                await task;
+
+                try
+                {
+                    await document.DeleteAsync();
+                }
+                catch(Exception e)
+                {
+
+                }
+
+            }
+            catch(Exception e)
+            {
+
+            }
+            
         }
 
         public static void SetChangeListner(Action<QuerySnapshot> callback)
