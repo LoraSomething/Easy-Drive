@@ -1,5 +1,6 @@
 package com.example.easydriveapp;
 
+import com.google.firebase.Timestamp;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -20,6 +21,10 @@ public class Userfile {
     @SerializedName("MD5hash")
     @Expose
     private String MD5hash;
+
+    @SerializedName("lastModified")
+    @Expose
+    private long lastModified;
 
 
     enum FileType {
@@ -55,6 +60,12 @@ public class Userfile {
         this._id = _id;
     }
 
+    public long getLastModified() {
+        return lastModified;
+    }
+    public void setLastModified(long lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;

@@ -1,9 +1,6 @@
 package com.example.easydriveapp;
 
 import android.util.Log;
-
-import com.google.android.gms.common.util.Hex;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

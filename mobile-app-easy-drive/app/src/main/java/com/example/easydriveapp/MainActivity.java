@@ -123,13 +123,6 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
             }
         });
 
-        DataAccesFirestore.SetChangeListener(new Action<Boolean>() {
-            @Override
-            public void execute(Boolean param) {
-                getAllFiles(null);
-            }
-        });
-
         AuthChanged();
         userfiles = new ArrayList<>();
     }
@@ -141,6 +134,12 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
             btSignIn.setVisibility(View.GONE);
             tvWelcome.setVisibility(View.GONE);
             getAllFiles(null);
+            DataAccesFirestore.SetChangeListener(new Action<Boolean>() {
+                @Override
+                public void execute(Boolean param) {
+                    getAllFiles(null);
+                }
+            });
         }
         else
         {
@@ -205,7 +204,16 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
                     Log.e("---File name---", f.getName());
 
                     Userfile u = new Userfile();
-                    u.setName(f.getName());
+
+                    String name = f.getName();
+
+                    char forbiddenChars[] = {'/','\\',':','*','?','\"','<','>','|'};
+
+                    for (int i = 0; i < forbiddenChars.length; i++){
+                        name = name.replace(forbiddenChars[i],'-');
+                    }
+
+                    u.setName(name);
                     u.setFileExtension(type);
                     u.setMD5hash(MD5);
                     DataAccesFirestore.CreateFile(new Action<Boolean>() {

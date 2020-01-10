@@ -1,19 +1,17 @@
 package com.example.easydriveapp;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,16 +26,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class DataAccesFirestore {
-
-    //final static String UserId = FirebaseAuth.getInstance().getUid();
-    //final static String UserId = "darkme.cl@gmail.com";
-
 
     public static void CreateFile(final Action<Boolean> action, final Userfile u, final Uri uri) {
 
@@ -50,7 +43,6 @@ public class DataAccesFirestore {
                     public void onSuccess(final DocumentReference documentReference) {
 
                         Userfile uf = u;
-
                         uf.set_id(documentReference.getId());
                         DataAccesFirestore.UpdateOneFile(new Action<Boolean>() {
                             @Override
@@ -213,8 +205,9 @@ public class DataAccesFirestore {
     public static void UpdateOneFile(final Action<Boolean> action, String id, Userfile u) {
 
         final String UserId = FirebaseAuth.getInstance().getUid();
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        u.setLastModified( System.currentTimeMillis() / 1000L);
         db.collection("Userfiles").document(UserId).collection("files").document(id).set(u)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
