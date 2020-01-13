@@ -3,12 +3,9 @@
     <group>
         <item
             android:id="@+id/nav_item_one"
-            android:title="Upload File" />
-        <item
-            android:id="@+id/nav_item_two"
             android:title="My Account" />
         <item
-            android:id="@+id/nav_item_three"
+            android:id="@+id/nav_item_two"
             android:title="Settings" />
     </group>
 

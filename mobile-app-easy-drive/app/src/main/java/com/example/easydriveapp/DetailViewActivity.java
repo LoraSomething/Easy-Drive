@@ -34,6 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,7 +43,7 @@ import retrofit2.Response;
 
 public class DetailViewActivity extends AppCompatActivity {
 
-    TextView tvFileName;
+    TextView tvFileName, tvFileExt, tvLastModified;
     Button btRename, btOpen, btDownload, btDelete;
     String userfileId;
     Userfile userfile;
@@ -57,6 +59,8 @@ public class DetailViewActivity extends AppCompatActivity {
         userfileId = getIntent().getStringExtra("userfileIdIntent");
 
         tvFileName = findViewById(R.id.tvFileName);
+        tvFileExt = findViewById(R.id.tvFileExt);
+        tvLastModified = findViewById(R.id.tvLastModified);
         btRename = findViewById(R.id.btRename);
         btOpen = findViewById(R.id.btOpen);
         btDownload = findViewById(R.id.btDownload);
@@ -77,10 +81,22 @@ public class DetailViewActivity extends AppCompatActivity {
             public void execute(Userfile param) {
                 userfile = param;
 
+                java.util.Date time = new java.util.Date((long)userfile.getLastModified()*1000);
+
+                long date1 =  userfile.getLastModified()*1000;
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                Date dt = new Date(date1);
+
+
+
                 if (userfile.getFileExtension() != null) {
-                    tvFileName.setText(userfile.getName() + "." + userfile.getFileExtension());
+                    tvFileName.setText("Name: "+userfile.getName());
+                    tvFileExt.setText("Extension: "+userfile.getFileExtension());
+                    tvLastModified.setText("Last Modified: "+dateFormat.format(dt));
                 } else {
-                    tvFileName.setText(userfile.getName());
+                    tvFileName.setText("Name: "+userfile.getName());
+                    tvFileExt.setText("Extension: "+"unknown");
+                    tvLastModified.setText("Last Modified: "+userfile.getLastModified()+"");
                 }
 
                 if (userfile.decideFileType() == Userfile.FileType.IMAGE) {
@@ -119,7 +135,7 @@ public class DetailViewActivity extends AppCompatActivity {
                         DataAccesFirestore.UpdateOneFile(new Action<Boolean>() {
                             @Override
                             public void execute(Boolean param) {
-                                tvFileName.setText(m_Text + "." + userfile.getFileExtension());
+                                tvFileName.setText("Name: "+m_Text );
                             }
                         }, userfileId, userfile);
                     }
