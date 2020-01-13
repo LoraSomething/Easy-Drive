@@ -19,7 +19,11 @@
                 <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
+<<<<<<< HEAD
             <Image Grid.Row="1" Grid.Column="0" MaxHeight="200px" MaxWidth="200px" Source="C:\Users\Lora\Desktop\Easy-Drive\desktop-app-easy-drive\images\drive.png"/>
+=======
+            <Image Grid.Row="1" Grid.Column="0" MaxHeight="200px" MaxWidth="200px" Source="C:\Users\Lora\Desktop\EasyDrive\desktop-app-easy-drive\images\drive.png"/>
+>>>>>>> 6b0767ba1991e96d7e8a1e1fa115080f2f457250
             <Label Grid.Row="0" Grid.ColumnSpan="2" Content="Welcome to Easy Drive" Margin="10" FontSize="16" Padding="5" Foreground="White" VerticalAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold"/>
 
             <StackPanel Grid.Row="1" Grid.Column="1">

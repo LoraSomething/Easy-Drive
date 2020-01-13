@@ -1,5 +1,6 @@
 package com.example.easydriveapp;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
     DrawerLayout drawer ;
     ActionBarDrawerToggle toggle;
     NavigationView nv;
+    FloatingActionButton fab;
 
     //@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -106,13 +109,9 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
                 switch(id)
                 {
                     case R.id.nav_item_one:
-                        //Toast.makeText(MainActivity.this, "Upload",Toast.LENGTH_SHORT).show();
-                        uploadFile();
-                        break;
-                    case R.id.nav_item_two:
                         Toast.makeText(MainActivity.this, "Account",Toast.LENGTH_SHORT).show();
                         break;
-                    case R.id.nav_item_three:
+                    case R.id.nav_item_two:
                         Toast.makeText(MainActivity.this, "Settings",Toast.LENGTH_SHORT).show();
                         break;
                     default:
@@ -123,16 +122,26 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
             }
         });
 
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadFile();
+            }
+        });
+
         AuthChanged();
         userfiles = new ArrayList<>();
     }
 
+    @SuppressLint("RestrictedApi")
     public void AuthChanged(){
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             tvUserNav.setText("Current user: \n"+FirebaseAuth.getInstance().getCurrentUser().getEmail());
             btSignOut.setVisibility(View.VISIBLE);
             btSignIn.setVisibility(View.GONE);
             tvWelcome.setVisibility(View.GONE);
+            fab.setVisibility(View.VISIBLE);
             getAllFiles(null);
             DataAccesFirestore.SetChangeListener(new Action<Boolean>() {
                 @Override
@@ -148,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
             tvWelcome.setVisibility(View.VISIBLE);
             btSignIn.setVisibility(View.VISIBLE);
             tvUserFileList.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
         }
     }
 
