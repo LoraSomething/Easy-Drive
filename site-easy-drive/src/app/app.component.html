@@ -1,6 +1,25 @@
-<h1>{{title}}</h1>
+<mat-toolbar color="primary">
+  <span>{{ title }}</span>
+  <span class="toolbar-span"></span>
+  <app-fileupload></app-fileupload>
+  <button mat-button (click)="drawer.close()" matTooltip="Acount">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+</mat-toolbar>
 
-<app-files></app-files>
+<mat-drawer-container class="drawer-container" autosize>
 
-<app-fileupload></app-fileupload>
+  <mat-drawer #drawer class="drawer-sidenav" mode="side" position="end">
+    <button mat-button color="white" (click)="drawer.close()" matTooltip="Close details">
+      <mat-icon>clear</mat-icon>
+    </button>
 
+    <app-singlefile [userfile]="clickedFile"></app-singlefile>
+  </mat-drawer>
+
+  <app-files (fileClicked)="childFileClicked($event)"></app-files>
+
+
+
+
+</mat-drawer-container>

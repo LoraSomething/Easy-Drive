@@ -23,8 +23,13 @@ namespace Desktop_app_easy_drive
             IDelete = new AppCommand(new Action<object>(DeleteFile));
             ILogin = new AppCommand(new Action<object>(Login));
             ILogout = new AppCommand(new Action<object>(Logout));
-
+            ISetSynchFolder = new AppCommand(new Action<object>(SetSynchFolder));
+            
             LoginOverlayVisibility = Visibility.Visible;
+            StatusDisplay.SetVM(this);
+            SynchFolder = Properties.Settings.Default.SynchFolder;
+
+            Status = "Idle";
             
         }
 
@@ -41,13 +46,17 @@ namespace Desktop_app_easy_drive
         public ICommand IDelete { get; set; }
         public ICommand ILogin { get; set; }
         public ICommand ILogout { get; set; }
+        public ICommand ISetSynchFolder { get; set; }
 
         private App _app;
-        private List<Userfile> _userfiles;
+        private List<Userfile> _userfiles = null;
         private Userfile _userfile;
         private Visibility _loginOverlayVisibility;
         private string _loginEmail;
         private string _userEmail;
+        private string _synchFolder;
+        private string _status;
+
 
         public SecureString SecurePassword { private get; set; }
 
@@ -77,6 +86,21 @@ namespace Desktop_app_easy_drive
             {
                 _loginOverlayVisibility = value;
                 Notify(nameof(LoginOverlayVisibility));
+
+            }
+        }
+
+        public string Status
+        {
+            get
+            {
+                return _status;
+            }
+
+            set
+            {
+                _status = value;
+                Notify(nameof(Status));
 
             }
         }
@@ -134,11 +158,41 @@ namespace Desktop_app_easy_drive
             }
         }
 
+        public string SynchFolder
+        {
+            get
+            {
+                return _synchFolder;
+            }
+
+            set
+            {
+                _synchFolder = value;
+                Notify(nameof(SynchFolder));
+
+            }
+        }
+        
+
         public void GetFileURL(object param)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 _app.CreateNewFile(openFileDialog.FileName);
+        }
+
+        public void SetSynchFolder(object param)
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    SynchFolder = dialog.SelectedPath;
+                    Properties.Settings.Default.SynchFolder = SynchFolder;
+                    Properties.Settings.Default.Save();
+                }
+            }
         }
 
         public void Rename(object param)
@@ -179,6 +233,9 @@ namespace Desktop_app_easy_drive
         public void Logout(object param)
         {
             _app.Logout();
+            Properties.Settings.Default.SynchFolder = "";
+            Properties.Settings.Default.Save();
+            SynchFolder = "";
         }
 
     }

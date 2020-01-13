@@ -1,0 +1,39 @@
+mat-drawer{
+  min-width: 400px;
+}
+
+mat-toolbar{
+  button {
+    margin: 10px;
+    border-radius: 35px;
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+    padding: 0;
+  }
+}
+
+.toolbar-icon {
+  padding: 0 14px;
+}
+
+.toolbar-span {
+  flex: 1 1 auto;
+}
+
+mat-drawer-container {
+  height: 100%;
+  button {
+    margin: 10px;
+    border-radius: 35px;
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+    padding: 0;
+  }
+
+}
+
+app-fileupload{
+  margin: 0;
+}

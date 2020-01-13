@@ -1,4 +1,7 @@
 ﻿using Firebase.Auth;
+using FirebaseAdmin;
+using FirebaseAdmin.Auth;
+using Google.Apis.Auth.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +9,13 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Desktop_app_easy_drive
 {
     static class Authentication
     {
-        static private FirebaseAuthLink firebaseAuthLink;
+        static private FirebaseToken firebaseToken;
         
         static public async void AuthenticateUser(string email, SecureString password, Action<bool> callback)
         {
@@ -20,9 +24,14 @@ namespace Desktop_app_easy_drive
                 using (var firebaseAuth = new FirebaseAuthProvider(new FirebaseConfig(Properties.Settings.Default.APIKEY)))
                 {
 
-                    firebaseAuthLink = await firebaseAuth.SignInWithEmailAndPasswordAsync(email, ConvertToUnsecureString(password));
+                    var firebaseAuthLink = await firebaseAuth.SignInWithEmailAndPasswordAsync(email, ConvertToUnsecureString(password));
+
+                    Properties.Settings.Default.FirebaseToken = firebaseAuthLink.FirebaseToken;
+                    Properties.Settings.Default.Save();
 
                     callback(true);
+
+                    
                 }
 
             }
@@ -36,28 +45,48 @@ namespace Desktop_app_easy_drive
 
         static public void Logout()
         {
-            firebaseAuthLink = null;
-            
+            Properties.Settings.Default.FirebaseToken = "";
+            Properties.Settings.Default.Save();
         }
 
-        static public bool IsAuthenticated()
+        static public async void IsAuthenticatedAsync(Action<bool> callback)
         {
-            if (firebaseAuthLink != null)
+            try
             {
-                return true;
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.GetApplicationDefault(),
+                });
+
             }
-            else
+            catch
             {
-                return false;
+
             }
+
+            try
+            {
+                string token = Properties.Settings.Default.FirebaseToken;
+
+                    //MessageBox.Show(token);
+                firebaseToken = await FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token);
+
+                callback(true);
+
+            }
+            catch
+            {
+                callback(false);
+            }
+            
         }
 
 
         static public string GetUserID()
         {
-            if (firebaseAuthLink != null)
+            if (firebaseToken != null)
             {
-               return firebaseAuthLink.User.LocalId;
+               return firebaseToken.Uid;
             }
             else
             {
@@ -67,9 +96,9 @@ namespace Desktop_app_easy_drive
 
         static public string GetEmail()
         {
-            if (firebaseAuthLink != null)
+            if (firebaseToken != null)
             {
-                return firebaseAuthLink.User.Email;
+                return firebaseToken.Claims["email"].ToString();
             }
             else
             {
@@ -79,9 +108,9 @@ namespace Desktop_app_easy_drive
 
         static public string GetToken()
         {
-            if (firebaseAuthLink != null)
+            if (firebaseToken != null)
             {
-                return firebaseAuthLink.FirebaseToken;
+                return Properties.Settings.Default.FirebaseToken;
             }
             else
             {

@@ -59,5 +59,15 @@ namespace Desktop_app_easy_drive.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon DriveIcon {
+            get {
+                object obj = ResourceManager.GetObject("DriveIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { UserFile } from '../file';
+import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
+import { UserFile } from '../UserFile';
 import { FileService } from '../file.service';
+import { DrawerService } from '../drawer.service';
 
 @Component({
   selector: 'app-files',
@@ -10,22 +11,30 @@ import { FileService } from '../file.service';
 export class FilesComponent implements OnInit {
 
   files: UserFile[];
-  selectedFile: UserFile;
+
+  @Output() fileClicked = new EventEmitter<UserFile>();
 
   ngOnInit() {
-    this.getFiles();
-  }
-  constructor(private fileService: FileService) {
-  }
-
-  getFiles(): void {
-    this.fileService.getFiles()
-      .subscribe(files => this.files = files);
-        
+    this.fileService.GetFiles().subscribe(doc => {
+      this.files = doc;
+      console.log(doc);
+    });
   }
 
-  onSelect(file: UserFile){
-    this.selectedFile = file;
+  constructor(private fileService: FileService, private drawer: DrawerService) {
+  }
+
+  onClick(userfile: UserFile) {
+    this.fileClicked.emit(userfile);
+  }
+
+  getImage(fileExtension: string): string {
+    if (fileExtension === 'jpg') {
+      return 'assets/img/img-icon.png';
+    } else if (fileExtension === 'pdf') {
+      return 'assets/img/pdf-icon.png';
+    }
   }
 
 }
+

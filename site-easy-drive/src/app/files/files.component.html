@@ -1,8 +1,11 @@
 
 <h2>Files</h2>
-<ul>
-    <li *ngFor="let file of files">
-        <span *ngIf="file" [class.selected]="file === selectedFile" (click)="onSelect(file)">Name: {{file.name}}</span><br/>
-    </li>
-</ul>
-<app-singlefile [file]="selectedFile"></app-singlefile>
+
+<div class=files-container>
+<mat-card *ngFor="let file of files" class="ripple-container mat-elevation-z4" matRipple (click)="onClick(file)">
+  <img mat-card-image src={{getImage(file.fileExtension)}}>
+<mat-card-title>{{file.name}}</mat-card-title>
+</mat-card>
+</div>
+
+

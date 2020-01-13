@@ -31,5 +31,29 @@ namespace Desktop_app_easy_drive.Properties {
                 return ((string)(this["APIKEY"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SynchFolder {
+            get {
+                return ((string)(this["SynchFolder"]));
+            }
+            set {
+                this["SynchFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FirebaseToken {
+            get {
+                return ((string)(this["FirebaseToken"]));
+            }
+            set {
+                this["FirebaseToken"] = value;
+            }
+        }
     }
 }

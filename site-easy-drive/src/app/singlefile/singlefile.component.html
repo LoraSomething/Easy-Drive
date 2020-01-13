@@ -1,6 +1,6 @@
-<h2>Single File detail</h2>
-<div *ngIf="file">
-    <span *ngIf="file">ID: {{file._id}}</span><br />
-    <span *ngIf="file">Name: {{file.name}}</span><br />
-    <span *ngIf="file">Folder: {{file.location}}</span><br />
+<div class=file-details-container *ngIf="userfile">
+  <br/>
+  <p>Name: {{userfile.name}} </p>
+  <p>Extension: {{userfile.fileExtension}}</p>
+  <p>Last modified: {{getTime() | date: 'dd/MM/yyyy, hh:mm:ss'}}</p>
 </div>

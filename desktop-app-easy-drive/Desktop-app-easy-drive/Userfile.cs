@@ -22,6 +22,9 @@ namespace Desktop_app_easy_drive
         [FirestoreProperty]
         public string _id { get; set; }
 
+        [FirestoreProperty]
+        public long lastModified { get; set; }
+
         public override string ToString()
         {
             return name + "." + fileExtension;

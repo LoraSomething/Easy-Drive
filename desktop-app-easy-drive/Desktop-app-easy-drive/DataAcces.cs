@@ -54,7 +54,8 @@ namespace Desktop_app_easy_drive
             {
                 name = System.IO.Path.GetFileNameWithoutExtension(url),
                 fileExtension = System.IO.Path.GetExtension(url).Substring(1),
-                md5hash = CalculateMD5(url)
+                md5hash = Utils.CalculateMD5(url),
+                lastModified = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             };
             
             DocumentReference document = await collection.AddAsync(userfile);
@@ -90,23 +91,6 @@ namespace Desktop_app_easy_drive
             }
         }
 
-        static string CalculateMD5(string filename)
-        {
-            using (MD5 md5 = new MD5CryptoServiceProvider())
-            {
-                using (var stream = File.OpenRead(filename))
-                {
-                    var hash = md5.ComputeHash(stream);
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hash.Length; i++)
-                    {
-                        sb.Append(hash[i].ToString("x2"));
-                    }
-                    return sb.ToString();
-                }
-            }
-        }
-
         public static async void RenameOneFileAsync(Userfile userfile)
         {
             string userID = Authentication.GetUserID();
@@ -116,9 +100,13 @@ namespace Desktop_app_easy_drive
             DocumentReference document = db.Collection("Userfiles").Document(userID).Collection("files").Document(userfile._id);
 
             await document.SetAsync(
-            new { name = userfile.name },
+            new
+            {
+                name = userfile.name,
+                lastModified = Timestamp.GetCurrentTimestamp()
+            },
             SetOptions.MergeAll);
-
+            
         }
 
         public static async void DownloadOneFileAsync(Userfile userfile, Action<String> callback)
@@ -129,7 +117,7 @@ namespace Desktop_app_easy_drive
             callback(downloadUrl);
         }
 
-        public static async void DeleteAsync(Userfile userfile, Action<String> callback)
+        public static async void DeleteAsync(Userfile userfile, Action<bool> callback)
         {
             string userID = Authentication.GetUserID();
 
@@ -146,6 +134,7 @@ namespace Desktop_app_easy_drive
                 try
                 {
                     await document.DeleteAsync();
+                    callback(true);
                 }
                 catch(Exception e)
                 {
@@ -155,7 +144,7 @@ namespace Desktop_app_easy_drive
             }
             catch(Exception e)
             {
-
+                callback(false);
             }
             
         }

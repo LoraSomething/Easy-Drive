@@ -73,8 +73,11 @@
                     <ColumnDefinition Width="0.3*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Content="Synchronize folder"  Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1" FontSize="14" Margin="10" Padding="5"/>
-                <Label Content="Current folder" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                <Button Content="Synchronize folder" Command="{Binding ISetSynchFolder}" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1" FontSize="14" Margin="10" Padding="5"/>
+                <StackPanel Orientation="Horizontal"  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+                    <Label Content="Selected Folder: " FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                    <Label Content="{Binding SynchFolder}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                </StackPanel>
 
             </Grid>
 
@@ -89,7 +92,10 @@
             <Label Content="Your files"  FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
             <ListView ItemsSource="{Binding Userfiles}"  SelectedItem="{Binding Userfile}"  Grid.Row="1"  Margin="30 10 30 10">
             </ListView>
-            <Label Content="Status:" Grid.Row="2" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Label Content="Status:" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10 10 1 10"/>
+                <Label Content="{Binding Status}" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="1 10 10 10"/>
+            </StackPanel>
         </Grid>
 
         <local:LoginOverlay Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Grid.RowSpan="2" Visibility="{Binding LoginOverlayVisibility,FallbackValue=Hidden}" Loaded="LoginOverlay_Loaded"/>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -16,23 +17,93 @@ namespace Desktop_app_easy_drive
     public partial class App : Application
     {
         ViewM vm;
+        private System.Windows.Forms.NotifyIcon _notifyIcon;
+        private bool _isExit;
+
+
         private void OnStartup(object sender, StartupEventArgs e)
         {
             vm = new ViewM(this);
             var win = new MainWindow();
+            win.Closing += MainWindow_Closing;
+
             win.DataContext = vm;
             win.Show();
+
+            _notifyIcon = new System.Windows.Forms.NotifyIcon();
+            _notifyIcon.DoubleClick += (s, args) => ShowMainWindow();
+            _notifyIcon.Icon = Desktop_app_easy_drive.Properties.Resources.DriveIcon;
+            _notifyIcon.Visible = true;
+
+            Authentication.IsAuthenticatedAsync((Action<bool>)((res) =>
+            {
+                if (res)
+                {
+                    InitializeApp();
+                    vm.LoginOverlayVisibility = Visibility.Hidden;
+                }
+                else
+                {
+                    vm.LoginOverlayVisibility = Visibility.Visible;
+                    MessageBox.Show("Auth check failed");
+                }
+            }));
+
+            CreateContextMenu();
             
-            // how to run app in taskbar
             // settings to synch folder
-            // save in db an MD5 hash of the file contents
         }
+
+        private void CreateContextMenu()
+        {
+            _notifyIcon.ContextMenuStrip =
+              new System.Windows.Forms.ContextMenuStrip();
+            _notifyIcon.ContextMenuStrip.Items.Add("Open").Click += (s, e) => ShowMainWindow();
+            _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
+        }
+
+        private void ExitApplication()
+        {
+            _isExit = true;
+            MainWindow.Close();
+            _notifyIcon.Dispose();
+            _notifyIcon = null;
+        }
+
+        private void ShowMainWindow()
+        {
+            if (MainWindow.IsVisible)
+            {
+                if (MainWindow.WindowState == WindowState.Minimized)
+                {
+                    MainWindow.WindowState = WindowState.Normal;
+                }
+                MainWindow.Activate();
+            }
+            else
+            {
+                MainWindow.Show();
+            }
+        }
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            if (!_isExit)
+            {
+                e.Cancel = true;
+                MainWindow.Hide(); // A hidden window can be shown again, a closed one not
+            }
+        }
+
+
 
         public void GetAllFiles()
         {
+            StatusDisplay.Show("Synchronizing with server");
             DataAcces.GetAllFilesAsync((Action<List<Userfile>>)((res) =>
             {
                     vm.Userfiles = res;
+
             }));
 
         }
@@ -41,7 +112,15 @@ namespace Desktop_app_easy_drive
         {
             DataAcces.CreateFileAsync(fileURL, (Action<bool>)((res) =>
             {
-               MessageBox.Show("upload done");
+                if (res)
+                {
+                    StatusDisplay.Show("File uploaded succesfully");
+                }
+                else
+                {
+                    StatusDisplay.Show("File upload failed");
+                }
+               
             }));
 
         }
@@ -49,6 +128,7 @@ namespace Desktop_app_easy_drive
         public void RenameOneFile(Userfile userfile)
         {
             DataAcces.RenameOneFileAsync(userfile);
+            StatusDisplay.Show("Renaming file");
         }
 
         public void DownloadOneFile(Userfile userfile,string folderName)
@@ -57,20 +137,44 @@ namespace Desktop_app_easy_drive
             {
                 using (WebClient wc = new WebClient())
                 {
-                    wc.DownloadFileAsync(new System.Uri(res),folderName);
                     string filename = userfile.name.Replace(":", "-");
                     string savepath = folderName + "\\" + filename + "." + userfile.fileExtension;
                     wc.DownloadFile(res, savepath);
+                    StatusDisplay.Show("File downloaded");
                 }
             }));
         }
 
         public void DeleteFile(Userfile userfile)
         {
-            DataAcces.DeleteAsync(userfile, (Action<string>)((res) =>
+            DataAcces.DeleteAsync(userfile, (Action<bool>)((res) =>
+            {
+                if (res)
+                {
+                    StatusDisplay.Show("File deleted succesfully");
+                }
+                else
+                {
+                    StatusDisplay.Show("File delete failed");
+                }
+            }));
+        }
+        
+        public void InitializeApp()
+        {
+            vm.UserEmail = Authentication.GetEmail();
+            DataAcces.SetChangeListner(snapshot =>
             {
 
-            }));
+                var a = snapshot.Changes;
+                GetAllFiles();
+
+            });
+
+            GetAllFiles();
+
+            FileSyncher.Instance.Initialize(vm);
+            FileSyncher.Instance.Start();
         }
 
         public void Login(string email, SecureString password)
@@ -79,17 +183,22 @@ namespace Desktop_app_easy_drive
             {
                 if (res)
                 {
-                    
-                    GetAllFiles();
-                    vm.UserEmail = Authentication.GetEmail();
-                    DataAcces.SetChangeListner(snapshot =>
+                    Authentication.IsAuthenticatedAsync((Action<bool>)((ress) =>
                     {
+                        if (ress)
+                        {
+                            InitializeApp();
+                            vm.LoginOverlayVisibility = Visibility.Hidden;
+                        }
+                        else
+                        {
+                            vm.LoginOverlayVisibility = Visibility.Visible;
+                            MessageBox.Show("Auth check failed");
+                        }
+                    }));
 
-                        var a = snapshot.Changes;
-                        GetAllFiles();
-
-                    });
-                    vm.LoginOverlayVisibility = Visibility.Hidden;
+                    //InitializeApp();
+                    //vm.LoginOverlayVisibility = Visibility.Hidden;
                 }
                 else
                 {
@@ -102,9 +211,9 @@ namespace Desktop_app_easy_drive
         public void Logout()
         {
             vm.LoginOverlayVisibility = Visibility.Visible;
+            FileSyncher.Instance.Stop();
             vm.Userfiles = null;
             Authentication.Logout();
-        }
-        
+        }        
     }
 }
