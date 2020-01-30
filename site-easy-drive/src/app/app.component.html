@@ -1,8 +1,10 @@
 <mat-toolbar color="primary">
   <span>{{ title }}</span>
   <span class="toolbar-span"></span>
-  <app-fileupload></app-fileupload>
-  <button mat-button (click)="drawer.close()" matTooltip="Acount">
+  <button mat-button (click)="openUploadModal()" matTooltip="Upload Files">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button  routerLink="/login" mat-button (click)="drawer.close()" matTooltip="Acount">
     <mat-icon>account_circle</mat-icon>
   </button>
 </mat-toolbar>
@@ -17,9 +19,9 @@
     <app-singlefile [userfile]="clickedFile"></app-singlefile>
   </mat-drawer>
 
+  <app-login></app-login>
+
   <app-files (fileClicked)="childFileClicked($event)"></app-files>
-
-
 
 
 </mat-drawer-container>

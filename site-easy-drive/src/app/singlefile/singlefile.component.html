@@ -1,6 +1,12 @@
 <div class=file-details-container *ngIf="userfile">
   <br/>
   <p>Name: {{userfile.name}} </p>
+  <button mat-icon-button matTooltip='Edit Name'>
+    <mat-icon>edit</mat-icon>
+  </button>
   <p>Extension: {{userfile.fileExtension}}</p>
   <p>Last modified: {{getTime() | date: 'dd/MM/yyyy, hh:mm:ss'}}</p>
+  <button (click)='deleteFile()' mat-icon-button matTooltip='Delete File'>
+    <mat-icon>delete</mat-icon>
+  </button>
 </div>

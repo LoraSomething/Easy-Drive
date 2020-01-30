@@ -4,6 +4,7 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } fr
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from 'firebase';
+import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,6 @@ export class FileService {
   collectionRef = this.firestore.collection('Userfiles').doc('qGfGRfH6snT4ZaRbWHrEccpLT1x1').collection('files');
 
   GetFiles(): Observable<UserFile[]> {
-
   return this.collectionRef
     .snapshotChanges()
     .pipe(
@@ -33,4 +33,24 @@ export class FileService {
       }),
     );
   }
+
+  CreateFile(userfile: UserFile) {
+    this.collectionRef.add({
+      _id: userfile._id,
+      name: userfile.name,
+      fileExtension: userfile.fileExtension,
+      lastModified: userfile.lastModified,
+      md5hash: userfile.md5hash}).then((docRef) => {
+        this.collectionRef.doc(docRef.id).set({ _id: docRef.id }, { merge: true });
+      });
+  }
+
+  UpdateFile(userfile: UserFile, newname: string) {
+    this.collectionRef.doc(userfile._id).set({ name: newname }, { merge: true });
+  }
+
+  DeleteFile(userfile: UserFile) {
+    this.collectionRef.doc(userfile._id).delete();
+  }
+
 }

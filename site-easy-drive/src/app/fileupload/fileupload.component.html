@@ -1,4 +1,15 @@
-<button mat-button  matTooltip="Upload a new file">
-  <mat-icon>add</mat-icon>
-</button>
+<div>
+<div class="dropzone"
+appDropzone
+     (hovered)="toggleHover($event)"
+     (dropped)="onDrop($event)"
+     [class.hovering]="isHovering">
 
+     <h3>Drag and drop files here</h3>
+</div>
+
+<h3>Uploads</h3>
+
+<div *ngFor="let file of files">
+  <app-uploadtask [file]="file"></app-uploadtask>
+</div>

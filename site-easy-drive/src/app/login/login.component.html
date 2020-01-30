@@ -1,0 +1,14 @@
+<div>
+  <h2>Login</h2>
+<mat-form-field>
+  <input matInput [(ngModel)]="email" placeholder="username"/>
+</mat-form-field>
+<mat-form-field>
+    <input matInput [(ngModel)]="password" placeholder="password"/>
+  </mat-form-field>
+  <div class="loginButtonContainer">
+    <button mat-flat-button color="primary" (click)="Login()">Login</button>
+    <button mat-flat-button  (click)="logout()">Logout</button>
+  </div>
+  {{message}}
+</div>
