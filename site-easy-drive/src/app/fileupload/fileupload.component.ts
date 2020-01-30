@@ -36,4 +36,8 @@ export class FileuploadComponent implements OnInit {
       this.files.push(files.item(i));
     }
   }
+
+  upload(event) {
+    this.files.push(event.target.files[0]);
+  }
 }

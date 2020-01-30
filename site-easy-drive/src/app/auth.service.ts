@@ -1,21 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  authState: Observable<firebase.User>;
+
   constructor(private firebaseAuth: AngularFireAuth) {
-    this.user = firebaseAuth.authState;
+    this.authState = firebaseAuth.authState;
    }
-
-  user: Observable<firebase.User>;
-  succes = false;
-
-  public myCallback: (succes: boolean) => boolean;
 
    Signup(email: string, password: string) {
     this.firebaseAuth
@@ -30,7 +26,7 @@ export class AuthService {
   }
 
   IsLoggedIn() {
-    return this.user.pipe(first()).toPromise();
+    return this.authState;
  }
 
   Login(email: string, password: string): Promise<any> {
@@ -39,11 +35,9 @@ export class AuthService {
       .auth
       .signInWithEmailAndPassword(email, password)
       .then(value => {
-        console.log('Nice, it worked!');
         result();
       })
       .catch(err => {
-        console.log('Something went wrong:', err.message);
         reject();
       });
     });
@@ -53,6 +47,18 @@ export class AuthService {
   GetUID(): string {
     if (this.firebaseAuth.auth.currentUser.uid != null) {
       return this.firebaseAuth.auth.currentUser.uid;
+    }
+  }
+
+  GetUsername(): string {
+    if (this.firebaseAuth.auth.currentUser.displayName != null) {
+      return this.firebaseAuth.auth.currentUser.displayName;
+    }
+  }
+
+  GetEmail(): string {
+    if (this.firebaseAuth.auth.currentUser.email != null) {
+      return this.firebaseAuth.auth.currentUser.email;
     }
   }
 

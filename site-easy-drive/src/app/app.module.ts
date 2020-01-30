@@ -22,6 +22,7 @@ import { RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './AuthGuard';
 import { RegisterComponent } from './register/register.component';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { RegisterComponent } from './register/register.component';
     UploadtaskComponent,
     LoginComponent,
     RegisterComponent,
+    AccountComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,19 +47,10 @@ import { RegisterComponent } from './register/register.component';
     AngularFireAuthModule,
     AngularFireStorageModule,
     ReactiveFormsModule,
-    FormsModule,
-    RouterModule.forChild([{
-        path: '', component: AppComponent, canActivate: [AuthGuard]
-    }, {
-      path: 'login', component: LoginComponent
-    }, {
-      path: 'register', component: RegisterComponent
-    },  {
-      path: '**', redirectTo: ''
-    }])
+    FormsModule
   ],
   bootstrap: [AppComponent],
   providers: [DrawerService, AuthService],
-  entryComponents: [FileuploadComponent]
+  entryComponents: [FileuploadComponent, AccountComponent]
 })
 export class AppModule { }

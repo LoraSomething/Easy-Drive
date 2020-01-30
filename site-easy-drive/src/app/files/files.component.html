@@ -1,6 +1,6 @@
 <h2>Files</h2>
 
-<div class="files-container">
+<div *ngIf="files" class="files-container">
   <mat-card
     *ngFor="let file of files" class="ripple-container mat-elevation-z4" matRipple (click)="onClick(file)" >
     <img mat-card-image src="{{ getImage(file.fileExtension) }}" />

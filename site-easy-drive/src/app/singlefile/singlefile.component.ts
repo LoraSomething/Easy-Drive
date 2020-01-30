@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Injectable } from '@angular/core';
+import { Component, OnInit, Input, Injectable, ViewChild } from '@angular/core';
 import { UserFile } from '../UserFile';
 import { FileService } from '../file.service';
 import { DrawerService } from '../drawer.service';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-singlefile',
@@ -14,6 +15,8 @@ import { DrawerService } from '../drawer.service';
 export class SinglefileComponent implements OnInit {
 
   @Input() userfile: UserFile;
+  editDisabled = true;
+  downloadUrl: string;
 
   constructor(private fileService: FileService, private drawer: DrawerService) { }
 
@@ -28,6 +31,22 @@ export class SinglefileComponent implements OnInit {
   deleteFile() {
     this.fileService.DeleteFile(this.userfile);
     this.drawer.close();
+  }
+
+  editFileName() {
+    this.editDisabled = false;
+  }
+
+  saveChanges() {
+    this.editDisabled = true;
+    this.fileService.UpdateFile(this.userfile, this.userfile.name);
+  }
+
+  getDownloadLink(): string {
+    this.fileService.GetDownloadLink(this.userfile).then((link) => {
+      this.downloadUrl = link;
+    });
+    return this.downloadUrl;
   }
 
 }

@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 800px;
+  width: 700px;
   font-weight: 200;
   height: 300px;
   border: 2px dashed #f16624;
@@ -24,3 +24,16 @@
 progress::-webkit-progress-value {
   transition: width 0.1s ease;
 }
+
+input {
+  display: none;
+}
+
+mat-card{
+  width: 150px;
+  height: 25px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+

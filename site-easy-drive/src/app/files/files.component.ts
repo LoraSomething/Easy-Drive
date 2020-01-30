@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
 import { UserFile } from '../UserFile';
 import { FileService } from '../file.service';
 import { DrawerService } from '../drawer.service';
-import { JsonpClientBackend } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-files',
@@ -17,17 +17,29 @@ export class FilesComponent implements OnInit {
   @Output() fileClicked = new EventEmitter<UserFile>();
 
   ngOnInit() {
-    this.fileService.GetFiles().subscribe(doc => {
-      this.files = doc;
-    });
-
     this.drawer.drawerClosed.subscribe(() => {
       this.clickedFile = null;
-      console.log(this.clickedFile);
     });
+
   }
 
-  constructor(private fileService: FileService, private drawer: DrawerService) {
+  constructor(private fileService: FileService, private drawer: DrawerService, private authService: AuthService) {
+    const context = this;
+    authService.IsLoggedIn().subscribe({
+      next(user) {
+        if (user) {
+          context.fileService.GetFiles().subscribe(doc => {
+            context.files = doc;
+            // console.log('Files: ', doc);
+          });
+        } else {
+          context.files = null;
+        }
+      },
+      error(err) {
+        console.log('Error received', err);
+       }
+    });
   }
 
   onClick(userfile: UserFile) {

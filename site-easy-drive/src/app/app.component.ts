@@ -1,12 +1,11 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { DrawerService } from './drawer.service';
 import { UserFile } from './UserFile';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { FileuploadComponent } from './fileupload/fileupload.component';
 import { AuthService } from './auth.service';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { AccountComponent } from './account/account.component';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +23,7 @@ export class AppComponent {
 
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
+    this.userLoggedIn = false;
     this.drawerService.setDrawer(this.drawer);
   }
 
@@ -34,19 +34,30 @@ export class AppComponent {
 
   constructor(private drawerService: DrawerService,
               public matDialog: MatDialog,
-              private authenticationService: AuthService,
-              private router: Router
+              private authenticationService: AuthService
     ) {
-    const currentUser = authenticationService.IsLoggedIn();
-    if (currentUser) {
-            this.userLoggedIn = true;
+    const context = this;
+    authenticationService.IsLoggedIn().subscribe({
+      next(user) {
+        if (user) {
+          context.userLoggedIn = true;
+          console.log('User is logged in');
         } else {
-          this.userLoggedIn = false;
+          context.userLoggedIn = false;
+          console.log('No user');
         }
+      },
+      error(err) {
+        console.log('Error received', err);
+       }
+    });
   }
 
   openUploadModal() {
-    const dialogRef = this.matDialog.open(FileuploadComponent, {
-    });
+    const dialogRef = this.matDialog.open(FileuploadComponent);
+  }
+
+  openAccountModal() {
+    const dialogRef = this.matDialog.open(AccountComponent);
   }
 }

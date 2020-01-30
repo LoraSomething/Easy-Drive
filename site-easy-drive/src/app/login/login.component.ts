@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,14 +12,9 @@ export class LoginComponent implements OnInit {
   password: string;
   message: string;
 
-  constructor(private authenticationService: AuthService, private router: Router) { }
+  constructor(private authenticationService: AuthService) { }
 
   ngOnInit() {
-  }
-
-  logout() {
-    this.authenticationService.Logout();
-    this.router.navigate(['/login']);
   }
 
   async Login() {
@@ -29,7 +23,11 @@ export class LoginComponent implements OnInit {
       this.message = 'Y';
     })
     .catch(() => {
-      this.message = 'N';
+      this.message = 'Login failed. Please try again.';
     });
+  }
+
+  register() {
+
   }
 }
