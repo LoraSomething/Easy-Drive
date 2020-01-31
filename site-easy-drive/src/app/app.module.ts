@@ -20,7 +20,6 @@ import { DropzoneDirective } from './dropzone.directive';
 import { UploadtaskComponent } from './uploadtask/uploadtask.component';
 import { RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './AuthGuard';
 import { RegisterComponent } from './register/register.component';
 import { AccountComponent } from './account/account.component';
 
