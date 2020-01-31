@@ -16,9 +16,9 @@
   <button (click)='deleteFile()' mat-icon-button matTooltip='Delete File'>
     <mat-icon>delete</mat-icon>
   </button>
-  <a [href]="getDownloadLink()"><button mat-icon-button matTooltip='Download File'>
+  <button (click)="getDownloadLink()" mat-icon-button matTooltip='Download File'>
     <mat-icon>cloud_download</mat-icon>
-  </button></a>
+  </button>
 </div>
 
 

@@ -42,11 +42,14 @@ export class SinglefileComponent implements OnInit {
     this.fileService.UpdateFile(this.userfile, this.userfile.name);
   }
 
-  getDownloadLink(): string {
+  getDownloadLink() {
     this.fileService.GetDownloadLink(this.userfile).then((link) => {
-      this.downloadUrl = link;
+      // this.downloadUrl = link;
+      const a = document.createElement('a');
+      a.download = `${this.userfile.name}.${this.userfile.fileExtension}`;
+      a.href = link;
+      a.click();
     });
-    return this.downloadUrl;
   }
 
 }
