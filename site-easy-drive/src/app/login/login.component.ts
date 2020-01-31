@@ -11,6 +11,7 @@ export class LoginComponent implements OnInit {
   email: string;
   password: string;
   message: string;
+  register = false;
 
   constructor(private authenticationService: AuthService) { }
 
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  register() {
-
+  registerStart() {
+    this.register = true;
   }
 }

@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <span>{{ title }}</span>
+  <span>Easy Drive</span>
   <span class="toolbar-span"></span>
   <button *ngIf="userLoggedIn" mat-button (click)="openUploadModal()" matTooltip="Upload Files">
     <mat-icon>add</mat-icon>
@@ -20,6 +20,8 @@
   </mat-drawer>
 
     <app-files *ngIf="userLoggedIn" (fileClicked)="childFileClicked($event)"></app-files>
+
+    <div class="welcome-text"><h2 *ngIf="!userLoggedIn">Welcome to Easy Drive !</h2></div>
 
   <app-login *ngIf="!userLoggedIn"></app-login>
 

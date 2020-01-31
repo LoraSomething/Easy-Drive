@@ -15,7 +15,6 @@ import { AccountComponent } from './account/account.component';
 
 
 export class AppComponent {
-  title = 'Easy Drive';
   userLoggedIn = false;
   public clickedFile: UserFile;
 
@@ -41,10 +40,10 @@ export class AppComponent {
       next(user) {
         if (user) {
           context.userLoggedIn = true;
-          console.log('User is logged in');
+          // console.log('User is logged in');
         } else {
           context.userLoggedIn = false;
-          console.log('No user');
+          // console.log('No user');
         }
       },
       error(err) {

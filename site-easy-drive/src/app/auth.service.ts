@@ -13,7 +13,8 @@ export class AuthService {
     this.authState = firebaseAuth.authState;
    }
 
-   Signup(email: string, password: string) {
+   Signup(email: string, password: string): Promise<any> {
+    const prom = new Promise((result, reject) => {
     this.firebaseAuth
       .auth
       .createUserWithEmailAndPassword(email, password)
@@ -23,6 +24,8 @@ export class AuthService {
       .catch(err => {
         console.log('Something went wrong:', err.message);
       });
+    });
+    return prom;
   }
 
   IsLoggedIn() {

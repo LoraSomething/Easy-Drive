@@ -1,1 +1,15 @@
-<p>register works!</p>
+<mat-card class="register-container">
+  <div class='login-form'>
+    <h2>Register</h2>
+    <mat-form-field>
+      <input matInput [(ngModel)]="email" placeholder="username" />
+    </mat-form-field><br/>
+    <mat-form-field>
+      <input matInput [(ngModel)]="password" placeholder="password" type="password"/>
+    </mat-form-field>
+    <div class="loginButtonContainer">
+      <button mat-flat-button color="primary" (click)="Register()">Register</button>
+  </div>
+  <p>{{ message }}</p>
+  </div>
+</mat-card>
