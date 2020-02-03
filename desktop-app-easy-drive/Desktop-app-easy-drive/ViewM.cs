@@ -22,6 +22,7 @@ namespace Desktop_app_easy_drive
             IDownloadOne = new AppCommand(new Action<object>(DownloadOne));
             IDelete = new AppCommand(new Action<object>(DeleteFile));
             ILogin = new AppCommand(new Action<object>(Login));
+            IRegister = new AppCommand(new Action<object>(Register));
             ILogout = new AppCommand(new Action<object>(Logout));
             ISetSynchFolder = new AppCommand(new Action<object>(SetSynchFolder));
             
@@ -45,6 +46,7 @@ namespace Desktop_app_easy_drive
         public ICommand IDownloadOne { get; set; }
         public ICommand IDelete { get; set; }
         public ICommand ILogin { get; set; }
+        public ICommand IRegister { get; set; }
         public ICommand ILogout { get; set; }
         public ICommand ISetSynchFolder { get; set; }
 
@@ -228,6 +230,11 @@ namespace Desktop_app_easy_drive
         public void Login(object param)
         {
             _app.Login(_loginEmail, SecurePassword);
+        }
+
+        public void Register(object param)
+        {
+            System.Diagnostics.Process.Start("https://easy-drive-4251d.firebaseapp.com/");
         }
 
         public void Logout(object param)

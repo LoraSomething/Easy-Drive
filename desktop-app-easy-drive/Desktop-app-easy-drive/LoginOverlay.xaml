@@ -33,7 +33,7 @@
                 <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" Margin="10,0,10,10" Padding="5" />
                 <Button Content="Log In" Command="{Binding ILogin}" Margin="10,0,10,10" Padding="5" IsDefault="True"/>
                 <Label Content="Don't have an account?" FontSize="14" FontWeight="Bold" Foreground="White" Margin="10,10,10,0" HorizontalContentAlignment="Center" />
-                <Button Content="Create Account" Margin="10,0,10,10" Padding="5"  Width="150px"/>
+                <Button Content="Create Account" Command="{Binding IRegister}" Margin="10,0,10,10" Padding="5"  Width="150px"/>
             </StackPanel>
         </Grid>
         <Rectangle Fill="#EE4519"/>
