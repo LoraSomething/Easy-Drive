@@ -3,6 +3,8 @@
 
 /desktop-app-easy-drive/login-file
 
+/web-host-firebase
+
 # User-specific files
 *.suo
 *.user

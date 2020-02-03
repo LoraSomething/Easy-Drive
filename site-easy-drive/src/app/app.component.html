@@ -1,8 +1,10 @@
 <mat-toolbar color="primary">
-  <span>{{ title }}</span>
+  <span>Easy Drive</span>
   <span class="toolbar-span"></span>
-  <app-fileupload></app-fileupload>
-  <button mat-button (click)="drawer.close()" matTooltip="Acount">
+  <button *ngIf="userLoggedIn" mat-button (click)="openUploadModal()" matTooltip="Upload Files">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button *ngIf="userLoggedIn" mat-button (click)="openAccountModal()" matTooltip="Acount">
     <mat-icon>account_circle</mat-icon>
   </button>
 </mat-toolbar>
@@ -13,13 +15,14 @@
     <button mat-button color="white" (click)="drawer.close()" matTooltip="Close details">
       <mat-icon>clear</mat-icon>
     </button>
+    <app-singlefile *ngIf="userLoggedIn" [userfile]="clickedFile"></app-singlefile>
 
-    <app-singlefile [userfile]="clickedFile"></app-singlefile>
   </mat-drawer>
 
-  <app-files (fileClicked)="childFileClicked($event)"></app-files>
+    <app-files *ngIf="userLoggedIn" (fileClicked)="childFileClicked($event)"></app-files>
 
+    <div class="welcome-text"><h2 *ngIf="!userLoggedIn">Welcome to Easy Drive !</h2></div>
 
-
+  <app-login *ngIf="!userLoggedIn"></app-login>
 
 </mat-drawer-container>

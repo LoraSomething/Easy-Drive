@@ -1,6 +1,24 @@
+
 <div class=file-details-container *ngIf="userfile">
   <br/>
-  <p>Name: {{userfile.name}} </p>
+  <mat-form-field class="example-full-width">
+    <p>Name:</p>
+    <input matInput [(ngModel)]="userfile.name" [disabled]="editDisabled">
+  </mat-form-field>
+  <button mat-icon-button matTooltip='Edit Name' (click)="editFileName()" *ngIf="editDisabled">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip='Save Name' (click)="saveChanges()" *ngIf="!editDisabled">
+    <mat-icon>save</mat-icon>
+  </button>
   <p>Extension: {{userfile.fileExtension}}</p>
   <p>Last modified: {{getTime() | date: 'dd/MM/yyyy, hh:mm:ss'}}</p>
+  <button (click)='deleteFile()' mat-icon-button matTooltip='Delete File'>
+    <mat-icon>delete</mat-icon>
+  </button>
+  <button (click)="getDownloadLink()" mat-icon-button matTooltip='Download File'>
+    <mat-icon>cloud_download</mat-icon>
+  </button>
 </div>
+
+

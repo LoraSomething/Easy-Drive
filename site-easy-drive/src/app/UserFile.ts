@@ -12,7 +12,6 @@ export class UserFile {
     public name: string,
     public fileExtension: string,
     public md5hash: string,
-    public lastModified: number) {
-
+    public lastModified: number, ) {
     }
 }

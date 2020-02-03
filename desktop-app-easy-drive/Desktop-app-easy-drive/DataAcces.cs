@@ -103,7 +103,7 @@ namespace Desktop_app_easy_drive
             new
             {
                 name = userfile.name,
-                lastModified = Timestamp.GetCurrentTimestamp()
+                lastModified = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             },
             SetOptions.MergeAll);
             

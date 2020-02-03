@@ -1,0 +1,23 @@
+.progress-bar {
+  display: flexbox;
+}
+
+.progress-message-cont {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+  p {
+    margin: 0;
+  }
+}
+
+.progress-message1 {
+  width: 50%;
+}
+
+.progress-message2 {
+  width: 50%;
+  text-align: right;
+}
+
+

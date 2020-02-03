@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,12 @@ export class DrawerService {
 
   private drawer: MatSidenav;
 
+  @Output()
+  drawerClosed;
 
   public setDrawer(drawer: MatSidenav) {
     this.drawer = drawer;
+    this.drawerClosed = drawer.closedStart;
   }
 
   public open() {

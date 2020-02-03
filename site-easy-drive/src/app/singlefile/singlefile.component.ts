@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Injectable } from '@angular/core';
+import { Component, OnInit, Input, Injectable, ViewChild } from '@angular/core';
 import { UserFile } from '../UserFile';
 import { FileService } from '../file.service';
 import { DrawerService } from '../drawer.service';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-singlefile',
@@ -14,6 +15,8 @@ import { DrawerService } from '../drawer.service';
 export class SinglefileComponent implements OnInit {
 
   @Input() userfile: UserFile;
+  editDisabled = true;
+  downloadUrl: string;
 
   constructor(private fileService: FileService, private drawer: DrawerService) { }
 
@@ -21,18 +24,32 @@ export class SinglefileComponent implements OnInit {
   }
 
   getTime(): Date {
-    // multiplied by 1000 so that the argument is in milliseconds, not seconds.
     const date = new Date((this.userfile.lastModified) * 1000);
     return date;
-    // Hours part from the timestamp
-    const hours = date.getHours();
-    // Minutes part from the timestamp
-    const minutes = '0' + date.getMinutes();
-    // Seconds part from the timestamp
-    const seconds = '0' + date.getSeconds();
+  }
 
-    // Will display time in 10:30:23 format
-    // return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+  deleteFile() {
+    this.fileService.DeleteFile(this.userfile);
+    this.drawer.close();
+  }
+
+  editFileName() {
+    this.editDisabled = false;
+  }
+
+  saveChanges() {
+    this.editDisabled = true;
+    this.fileService.UpdateFile(this.userfile, this.userfile.name);
+  }
+
+  getDownloadLink() {
+    this.fileService.GetDownloadLink(this.userfile).then((link) => {
+      // this.downloadUrl = link;
+      const a = document.createElement('a');
+      a.download = `${this.userfile.name}.${this.userfile.fileExtension}`;
+      a.href = link;
+      a.click();
+    });
   }
 
 }
