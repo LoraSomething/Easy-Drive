@@ -122,8 +122,13 @@
               "devServerTarget": "site-easy-drive:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
+    }
+  },
   "defaultProject": "site-easy-drive"
 }
