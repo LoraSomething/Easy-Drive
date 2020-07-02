@@ -215,7 +215,11 @@ public class MainActivity extends AppCompatActivity implements UserfileAdapter.I
 
                     Userfile u = new Userfile();
 
-                    String name = f.getName();
+                    String filename = f.getName();
+                    int start = 0;
+                    int stop = filename.length()-type.length()-1;
+
+                    String name = filename.substring(start,stop);
 
                     char forbiddenChars[] = {'/','\\',':','*','?','\"','<','>','|'};
 

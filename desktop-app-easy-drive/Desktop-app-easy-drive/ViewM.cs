@@ -224,7 +224,10 @@ namespace Desktop_app_easy_drive
 
         public void DeleteFile(object param)
         {
-            _app.DeleteFile(_userfile);
+            if (_userfile != null)
+            {
+                _app.DeleteFile(_userfile);
+            }
         }
 
         public void Login(object param)

@@ -59,7 +59,7 @@ namespace Desktop_app_easy_drive
                 });
 
             }
-            catch
+            catch(Exception ex)
             {
 
             }
@@ -68,14 +68,14 @@ namespace Desktop_app_easy_drive
             {
                 string token = Properties.Settings.Default.FirebaseToken;
 
-                    //MessageBox.Show(token);
                 firebaseToken = await FirebaseAdmin.Auth.FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token);
 
                 callback(true);
 
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 callback(false);
             }
             

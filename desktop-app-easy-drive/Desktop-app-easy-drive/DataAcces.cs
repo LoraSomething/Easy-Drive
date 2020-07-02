@@ -17,8 +17,6 @@ namespace Desktop_app_easy_drive
 {
     class DataAcces
     {
-         
-
         static public async void GetAllFilesAsync(Action<List<Userfile>> callback)
         {
             string userID = Authentication.GetUserID();
